@@ -35,3 +35,11 @@ test('discard empty or commented lines', (t) => {
     t.strictEqual(render(withComments), '<div class="bar"></div>')
     t.end()
 })
+
+test('passing in props as a template variable', t => {
+    const withVar = retree`
+        div ${{ id: 'baz' }}
+    `()
+    t.strictEqual(render(withVar), '<div id="baz"></div>')
+    t.end()
+})

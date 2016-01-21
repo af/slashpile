@@ -1,30 +1,41 @@
-const lineRegex = /^(\s+)(\w+)(\.(\w+))*/
+'use strict'
+
+const lineRegex = /^(\s+)(\w+)(\.(\w+))* ?(\$\$\$)?/
 const commentRegex = /^\s+\//
 
-// TODO: pass in "takeParam" function that pulls template params in
-const lineToNode = (line) => {
+
+const lineToNode = (line, takeParam) => {
     const match = lineRegex.exec(line)
     if (!match || line.match(commentRegex)) return null
 
     const indent = match[1].length
+    let parsedProps = {
+        className: match[4] || null,
+        children: []
+    }
+
+    // If '$$$' was matched (a template var was passed in with props)
+    const variableProps = match[5] ? takeParam() : {}
     return {
         indent,
         type: match[2],
-        className: match[4],
-        children: []
+        props: Object.assign(variableProps, parsedProps)    // FIXME: merge className
     }
 }
 
 const create = (createEl) => {
-    return (templateChunks) => (config) => {
+    return function parseTemplate(templateChunks) {
         const params = [].slice.call(arguments, 1)
-        const lines = templateChunks.join('$$$').split('\n')     // FIXME: join hack
-        const parsedLines = lines.map(lineToNode)
-                                 .filter(l => !!l)
 
-        //console.log(parsedLines)
-        const node2dom = (node) => createEl(node.type, { className: node.className })
-        return node2dom(parsedLines[0])
+        return function renderTemplate(/* config */) {
+            // console.log('PARAMS', params)
+            const lines = templateChunks.join('$$$').split('\n')     // FIXME: join hack
+            const parsedLines = lines.map(l => lineToNode(l, () => params.shift()))
+                                     .filter(l => !!l)
+
+            const node2dom = (node) => createEl(node.type, node.props)
+            return node2dom(parsedLines[0])
+        }
     }
 }
 
