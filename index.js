@@ -1,6 +1,6 @@
 'use strict'
 
-const lineRegex = /^(\s+)(\w+)(\.([\w\.-]+))* ?(\$\$\$)?/
+const lineRegex = /^(\s+)(\w+)(?:\.([\w\.-]+))* ?(\$\$\$)?/
 const commentRegex = /^\s+\//
 
 
@@ -10,12 +10,12 @@ const lineToNode = (line, takeParam) => {
 
     const indent = match[1].length
     let parsedProps = {
-        className: (match[4] || '').replace(/\./g, ' ') || null,
+        className: (match[3] || '').replace(/\./g, ' ') || null,
         children: []
     }
 
     // If '$$$' was matched (a template var was passed in with props)
-    const variableProps = match[5] ? takeParam() : {}
+    const variableProps = match[4] ? takeParam() : {}
     return {
         indent,
         type: match[2],
@@ -23,18 +23,49 @@ const lineToNode = (line, takeParam) => {
     }
 }
 
+/**
+** Convert a flat array of nodes into a nested tree.
+**
+** @arg {array} nodes - An array of parsed nodes, each with an "indent" property
+** @return {object} - A tree of parsed nodes
+*/
+const nodesToTree = (nodes) => {
+    if (!nodes || !nodes.length) throw new Error('Invalid input to nodesToTree')
+
+    let tree = nodes[0]
+    for (var i = 1, l = nodes.length; i < l; i++) {
+        let n = nodes[i]
+
+        // Go backwards through the tree and find the node's parent: it's the
+        // closest node with a smaller indent than this one.
+        for (var j = i - 1; j >= 0; j--) {
+            if (n.indent > nodes[j].indent) {
+                nodes[j].props.children.push(n)
+                break
+            }
+        }
+    }
+    return tree
+}
+
+const renderTree = (node, renderer) => {
+    const children = (node && node.props && node.props.children)
+                     ? node.props.children.map(n => renderTree(n, renderer))
+                     : null
+    const props = Object.assign(node.props, { children })
+    return renderer(node.type, props)
+}
+
 const create = (createEl) => {
     return function parseTemplate(templateChunks) {
         const params = [].slice.call(arguments, 1)
 
         return function renderTemplate(/* config */) {
-            // console.log('PARAMS', params)
-            const lines = templateChunks.join('$$$').split('\n')     // FIXME: join hack
+            const lines = templateChunks.join('$$$').split('\n')    // Hacky line joining
             const parsedLines = lines.map(l => lineToNode(l, () => params.shift()))
                                      .filter(l => !!l)
-
-            const node2dom = (node) => createEl(node.type, node.props)
-            return node2dom(parsedLines[0])
+            const tree = nodesToTree(parsedLines)
+            return renderTree(tree, createEl)
         }
     }
 }
