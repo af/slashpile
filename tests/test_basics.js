@@ -16,6 +16,16 @@ test('simple matching without interpolation', (t) => {
         div.foo
     `()
     t.strictEqual(render(output), '<div class="foo"></div>')
+
+    const multiClass = retree`
+        div.foo.bar.baz
+    `()
+    t.strictEqual(render(multiClass), '<div class="foo bar baz"></div>')
+
+    const multiClass2 = retree`
+        div.foo-1.bar_2
+    `()
+    t.strictEqual(render(multiClass2), '<div class="foo-1 bar_2"></div>')
     t.end()
 })
 

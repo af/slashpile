@@ -1,6 +1,6 @@
 'use strict'
 
-const lineRegex = /^(\s+)(\w+)(\.(\w+))* ?(\$\$\$)?/
+const lineRegex = /^(\s+)(\w+)(\.([\w\.-]+))* ?(\$\$\$)?/
 const commentRegex = /^\s+\//
 
 
@@ -10,7 +10,7 @@ const lineToNode = (line, takeParam) => {
 
     const indent = match[1].length
     let parsedProps = {
-        className: match[4] || null,
+        className: (match[4] || '').replace(/\./g, ' ') || null,
         children: []
     }
 
