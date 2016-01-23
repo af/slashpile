@@ -60,9 +60,40 @@ test('string literal contents', t => {
     `()
     t.strictEqual(render(plainDiv), '<div>hi there</div>')
 
-    // const withVar = retree`
-    //     div ${{ id: 'baz' }} "hi there"
-    // `()
-    // t.strictEqual(render(withVar), '<div id="baz">hi there</div>')
+    const withVar = retree`
+        div ${{ id: 'baz' }} "hi there"
+    `()
+    t.strictEqual(render(withVar), '<div id="baz">hi there</div>')
+    t.end()
+})
+
+test('interpolated string contents', t => {
+    const plainDiv = retree`
+        div ${{}} ${'yo'}
+    `()
+    t.strictEqual(render(plainDiv), '<div>yo</div>')
+
+    const stringVarOnly = retree`
+        div ${'yo'}
+    `()
+    t.strictEqual(render(stringVarOnly), '<div>yo</div>')
+
+    const stringVarEscaping = retree`
+        div ${'yo & hi'}
+    `()
+    t.strictEqual(render(stringVarEscaping), '<div>yo &amp; hi</div>')
+
+    const nestedTemplates = retree`
+        div ${`this
+is
+multiline`}
+    `()
+    t.strictEqual(render(nestedTemplates), '<div>this\nis\nmultiline</div>')
+
+    const x = 123
+    const nestedInterpolation = retree`
+        div ${`this is ${x}`}
+    `()
+    t.strictEqual(render(nestedInterpolation), '<div>this is 123</div>')
     t.end()
 })

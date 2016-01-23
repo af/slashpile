@@ -1,6 +1,6 @@
 'use strict'
 
-const lineRegex = /^(\s+)(\w+)(?:\.([\w\.-]+))* ?(\$\$\$)? ?(?:"([^"]*)")?/
+const lineRegex = /^(\s+)(\w+)(?:\.([\w\.-]+))* ?(\$\$\$)? ?(?:(?:"([^"]*)")|(\$\$\$))?/
 const commentRegex = /^\s+\//
 
 
@@ -21,15 +21,25 @@ const lineToNode = (line, takeParam) => {
         children: []
     }
 
-    const stringChild = match[5]
-    if (stringChild) parsedProps.children = [stringChild]
+    // If '$$$' was matched, template var(s) were passed in for props and/or
+    // a string child:
+    let varProps = match[4] ? takeParam() : {}
+    let stringVarChild = match[6]
+    if (typeof varProps === 'string') {
+        stringVarChild = varProps
+        varProps = {}
+    } else if (stringVarChild) {
+        stringVarChild = takeParam()
+    }
 
-    // If '$$$' was matched (a template var was passed in with props)
-    const variableProps = match[4] ? takeParam() : {}
+    const stringLiteralChild = match[5]
+    if (stringLiteralChild) parsedProps.children = [stringLiteralChild]
+    else if (stringVarChild) parsedProps.children = [stringVarChild]
+
     return {
         indent,
         type: match[2],
-        props: Object.assign(variableProps, parsedProps)    // FIXME: merge className
+        props: Object.assign(varProps, parsedProps)    // FIXME: merge className
     }
 }
 
