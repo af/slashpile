@@ -70,7 +70,7 @@ const nodesToTree = (nodes) => {
 
 const renderTree = (node, renderer) => {
     if (typeof node === 'string') return node
-    const children = (node && node.props && node.props.children)
+    const children = (node && node.props && node.props.children.length)
                      ? node.props.children.map(n => renderTree(n, renderer))
                      : null
     const props = Object.assign(node.props, { children })

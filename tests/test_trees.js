@@ -55,7 +55,7 @@ test('multilevel example with parameters', t => {
                 input ${{ type: 'email' }}
                 select ${{ name: 'asdf' }}
             div
-                textarea "hey there"
+                span "hey there"
     `()
     t.strictEqual(render(multilevels), `<form method="post" action="/foo">
         <h1>this is a form</h1>
@@ -63,7 +63,7 @@ test('multilevel example with parameters', t => {
             <input type="email"/>
             <select name="asdf"></select>
         </fieldset>
-        <div><textarea>hey there</textarea></div>
+        <div><span>hey there</span></div>
     </form>
     `.replace(/\n\s+/g, ''))
 
