@@ -53,3 +53,16 @@ test('passing in props as a template variable', t => {
     t.strictEqual(render(withVar), '<div id="baz"></div>')
     t.end()
 })
+
+test('string literal contents', t => {
+    const plainDiv = retree`
+        div "hi there"
+    `()
+    t.strictEqual(render(plainDiv), '<div>hi there</div>')
+
+    // const withVar = retree`
+    //     div ${{ id: 'baz' }} "hi there"
+    // `()
+    // t.strictEqual(render(withVar), '<div id="baz">hi there</div>')
+    t.end()
+})

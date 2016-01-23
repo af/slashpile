@@ -1,18 +1,28 @@
 'use strict'
 
-const lineRegex = /^(\s+)(\w+)(?:\.([\w\.-]+))* ?(\$\$\$)?/
+const lineRegex = /^(\s+)(\w+)(?:\.([\w\.-]+))* ?(\$\$\$)? ?(?:"([^"]*)")?/
 const commentRegex = /^\s+\//
 
 
+/**
+* Convert a single line of the template into a single quasi-VDOM node.
+*
+* @arg {string} line - A single line of the template
+* @arg {function} takeParam - Returns the next interpolated template parameter
+* @return {object} - A node, parsed from the single-line input string
+*/
 const lineToNode = (line, takeParam) => {
     const match = lineRegex.exec(line)
     if (!match || line.match(commentRegex)) return null
 
     const indent = match[1].length
-    let parsedProps = {
+    const parsedProps = {
         className: (match[3] || '').replace(/\./g, ' ') || null,
         children: []
     }
+
+    const stringChild = match[5]
+    if (stringChild) parsedProps.children = [stringChild]
 
     // If '$$$' was matched (a template var was passed in with props)
     const variableProps = match[4] ? takeParam() : {}
@@ -49,6 +59,7 @@ const nodesToTree = (nodes) => {
 }
 
 const renderTree = (node, renderer) => {
+    if (typeof node === 'string') return node
     const children = (node && node.props && node.props.children)
                      ? node.props.children.map(n => renderTree(n, renderer))
                      : null

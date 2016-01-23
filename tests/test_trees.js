@@ -50,18 +50,20 @@ test('more involved nesting', (t) => {
 test('multilevel example with parameters', t => {
     const multilevels = retree`
         form ${{ method: 'post', action: '/foo' }}
+            h1 "this is a form"
             fieldset.baz
                 input ${{ type: 'email' }}
                 select ${{ name: 'asdf' }}
             div
-                input
+                textarea "hey there"
     `()
     t.strictEqual(render(multilevels), `<form method="post" action="/foo">
+        <h1>this is a form</h1>
         <fieldset class="baz">
             <input type="email"/>
             <select name="asdf"></select>
         </fieldset>
-        <div><input/></div>
+        <div><textarea>hey there</textarea></div>
     </form>
     `.replace(/\n\s+/g, ''))
 
