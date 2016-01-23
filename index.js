@@ -24,10 +24,10 @@ const lineToNode = (line, takeParam) => {
 }
 
 /**
-** Convert a flat array of nodes into a nested tree.
-**
-** @arg {array} nodes - An array of parsed nodes, each with an "indent" property
-** @return {object} - A tree of parsed nodes
+* Convert a flat array of nodes into a nested tree.
+*
+* @arg {array} nodes - An array of parsed nodes, each with an "indent" property
+* @return {object} - A tree of parsed nodes
 */
 const nodesToTree = (nodes) => {
     if (!nodes || !nodes.length) throw new Error('Invalid input to nodesToTree')

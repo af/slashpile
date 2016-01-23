@@ -42,7 +42,28 @@ test('more involved nesting', (t) => {
         <div><input/><select></select></div>
         <div><input/></div>
     </form>
-    `.replace(/\s/g, ''))
+    `.replace(/\n\s+/g, ''))
+
+    t.end()
+})
+
+test('multilevel example with parameters', t => {
+    const multilevels = retree`
+        form ${{ method: 'post', action: '/foo' }}
+            fieldset.baz
+                input ${{ type: 'email' }}
+                select ${{ name: 'asdf' }}
+            div
+                input
+    `()
+    t.strictEqual(render(multilevels), `<form method="post" action="/foo">
+        <fieldset class="baz">
+            <input type="email"/>
+            <select name="asdf"></select>
+        </fieldset>
+        <div><input/></div>
+    </form>
+    `.replace(/\n\s+/g, ''))
 
     t.end()
 })
