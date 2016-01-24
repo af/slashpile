@@ -3,10 +3,11 @@
 // Main regex for parsing input lines. The numbered group matches are labeled in
 // the line above the regex:
 const lineRegex = (
-//     (1)  (2)                 (3)    ----(4)-------    --(5)--           -(6)-       (7)
-    /^(\s+)(\w+|(?:\$\$\$))(?::(\w+))?(?:\.([\w\.-]+))* ?(\$\$\$)? ?(?:(?:"([^"]*)")|(\$\$\$))?/
+//     (1)  (2)        (3)      ----(4)----     (5)           -(6)-    (7)
+    /^(\s+)(\w+|%)(?::(\w+))?(?:\.([\w\.-]+))* ?(%)? ?(?:(?:"([^"]*)")|(%))?/
 )
 const commentRegex = /^\s+\//
+const PARAM_PLACEHOLDER = '%'        // Placeholder string for interpolated values
 
 
 /**
@@ -28,9 +29,9 @@ const lineToNode = (line, takeParam) => {
     }
 
     let tagType = match[2]
-    if (tagType === '$$$') tagType = takeParam()
+    if (tagType === PARAM_PLACEHOLDER) tagType = takeParam()
 
-    // If '$$$' was matched, template var(s) were passed in for props and/or
+    // If PARAM_PLACEHOLDER was matched, template var(s) were passed in for props and/or
     // a string child:
     let varProps = match[5] ? takeParam() : {}
     let stringVarChild = match[7]
@@ -91,7 +92,7 @@ const create = (createEl) => {
         const params = [].slice.call(arguments, 1)
 
         return function renderTemplate(/* config */) {
-            const lines = templateChunks.join('$$$').split('\n')    // Hacky line joining
+            const lines = templateChunks.join(PARAM_PLACEHOLDER).split('\n')
             const parsedLines = lines.map(l => lineToNode(l, () => params.shift()))
                                      .filter(l => !!l)
             const tree = nodesToTree(parsedLines)
