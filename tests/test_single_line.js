@@ -46,6 +46,21 @@ test('discard empty or commented lines', (t) => {
     t.end()
 })
 
+test('type attribute shorthand', t => {
+    const emailInput = retree`
+        input:email
+    `()
+    t.strictEqual(render(emailInput), '<input type="email"/>')
+
+    const submitButton = retree`
+        button:submit
+    `()
+    t.strictEqual(render(submitButton), '<button type="submit"></button>')
+
+    t.end()
+})
+
+
 test('passing in props as a template variable', t => {
     const withVar = retree`
         div ${{ id: 'baz' }}
