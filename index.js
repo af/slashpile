@@ -18,7 +18,7 @@ const commentRegex = /^\s+\//
 */
 const lineToNode = (line, takeParam) => {
     const match = lineRegex.exec(line)
-    if (!match || line.match(commentRegex)) return null
+    if (!match || commentRegex.test(line)) return null
 
     const indent = match[1].length
     const parsedProps = {
