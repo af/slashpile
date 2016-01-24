@@ -82,6 +82,43 @@ test('string literal contents', t => {
     t.end()
 })
 
+test('custom components', t => {
+    const C = react.createClass({
+        render: function() {
+            const p = { className: this.props.cls }
+            return react.DOM.div(p, this.props.children || 'hi')
+        }
+    })
+
+    const noArgs = retree`
+        ${C}
+    `()
+    t.strictEqual(render(noArgs), '<div>hi</div>')
+
+    const withStringChild = retree`
+        ${C} "yoyo"
+    `()
+    t.strictEqual(render(withStringChild), '<div>yoyo</div>')
+
+    const withProps = retree`
+        ${C} ${{ cls: 'foo' }}
+    `()
+    t.strictEqual(render(withProps), '<div class="foo">hi</div>')
+
+    const withPropsAndChild = retree`
+        ${C} ${{ cls: 'foo' }} "yo"
+    `()
+    t.strictEqual(render(withPropsAndChild), '<div class="foo">yo</div>')
+
+    const withDoubleInterpolation = retree`
+        ${C} ${{ cls: 'bar' }} ${ 'heyo' }
+    `()
+    t.strictEqual(render(withDoubleInterpolation), '<div class="bar">heyo</div>')
+
+    t.end()
+})
+
+
 test('interpolated string contents', t => {
     const plainDiv = retree`
         div ${{}} ${'yo'}

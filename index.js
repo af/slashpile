@@ -3,8 +3,8 @@
 // Main regex for parsing input lines. The numbered group matches are labeled in
 // the line above the regex:
 const lineRegex = (
-//     (1)  (2)      (3)    ----(4)-------    --(5)--           -(6)-       (7)
-    /^(\s+)(\w+)(?::(\w+))?(?:\.([\w\.-]+))* ?(\$\$\$)? ?(?:(?:"([^"]*)")|(\$\$\$))?/
+//     (1)  (2)                 (3)    ----(4)-------    --(5)--           -(6)-       (7)
+    /^(\s+)(\w+|(?:\$\$\$))(?::(\w+))?(?:\.([\w\.-]+))* ?(\$\$\$)? ?(?:(?:"([^"]*)")|(\$\$\$))?/
 )
 const commentRegex = /^\s+\//
 
@@ -27,6 +27,9 @@ const lineToNode = (line, takeParam) => {
         children: []
     }
 
+    let tagType = match[2]
+    if (tagType === '$$$') tagType = takeParam()
+
     // If '$$$' was matched, template var(s) were passed in for props and/or
     // a string child:
     let varProps = match[5] ? takeParam() : {}
@@ -44,7 +47,7 @@ const lineToNode = (line, takeParam) => {
 
     return {
         indent,
-        type: match[2],     // Tagname or (TODO) component function
+        type: tagType,
         props: Object.assign({}, parsedProps, varProps)    // FIXME: merge className
     }
 }
