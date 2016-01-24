@@ -1,6 +1,11 @@
 'use strict'
 
-const lineRegex = /^(\s+)(\w+)(?::(\w+))?(?:\.([\w\.-]+))* ?(\$\$\$)? ?(?:(?:"([^"]*)")|(\$\$\$))?/
+// Main regex for parsing input lines. The numbered group matches are labeled in
+// the line above the regex:
+const lineRegex = (
+//     (1)  (2)      (3)    ----(4)-------    --(5)--           -(6)-       (7)
+    /^(\s+)(\w+)(?::(\w+))?(?:\.([\w\.-]+))* ?(\$\$\$)? ?(?:(?:"([^"]*)")|(\$\$\$))?/
+)
 const commentRegex = /^\s+\//
 
 
@@ -18,9 +23,9 @@ const lineToNode = (line, takeParam) => {
     const indent = match[1].length
     const parsedProps = {
         className: (match[4] || '').replace(/\./g, ' ') || null,
+        type: match[3] || null,     // node.props.type, *not* node.type!
         children: []
     }
-    if (match[3]) parsedProps.type = match[3]
 
     // If '$$$' was matched, template var(s) were passed in for props and/or
     // a string child:
@@ -39,8 +44,8 @@ const lineToNode = (line, takeParam) => {
 
     return {
         indent,
-        type: match[2],
-        props: Object.assign(varProps, parsedProps)    // FIXME: merge className
+        type: match[2],     // Tagname or (TODO) component function
+        props: Object.assign({}, parsedProps, varProps)    // FIXME: merge className
     }
 }
 
