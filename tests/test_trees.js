@@ -67,3 +67,19 @@ test('multilevel example with parameters', t => {
 
     t.end()
 })
+
+test('array mapped children', t => {
+    const multilevels = retree`
+        ul
+            > ${ ['one', 'two', 'three'].map(x => retree`
+                li ${{ key: x }} ${x}
+            `()) }
+    `()
+    t.strictEqual(render(multilevels), `<ul>
+        <li>one</li>
+        <li>two</li>
+        <li>three</li>
+    `.replace(/\n\s+/g, ''))
+
+    t.end()
+})

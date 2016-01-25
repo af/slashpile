@@ -18,8 +18,18 @@ const PARAM_PLACEHOLDER = '%'        // Placeholder string for interpolated valu
 * @return {object} - A node, parsed from the single-line input string
 */
 const lineToNode = (line, takeParam) => {
+    if (commentRegex.test(line)) return null
+    if (line.match(/^\s+> %$/)) {
+        // array children case (WIP)
+        return {
+            indent: line.length - 1,
+            props: {},
+            array: takeParam()
+        }
+    }
+
     const match = lineRegex.exec(line)
-    if (!match || commentRegex.test(line)) return null
+    if (!match) return null
 
     const indent = match[1].length
     const parsedProps = {
@@ -63,6 +73,7 @@ const lineToNode = (line, takeParam) => {
 * @return {object} - A tree of parsed nodes
 */
 const nodesToTree = (nodes) => {
+    console.log(nodes)
     if (!nodes || !nodes.length) throw new Error('Invalid input to nodesToTree')
 
     let tree = nodes[0]
@@ -73,7 +84,9 @@ const nodesToTree = (nodes) => {
         // closest node with a smaller indent than this one.
         for (var j = i - 1; j >= 0; j--) {
             if (n.indent > nodes[j].indent) {
-                nodes[j].props.children.push(n)
+                const parent = nodes[j]
+                if (n.array) parent.props.children = parent.props.children.concat(n.array)
+                else parent.props.children.push(n)
                 break
             }
         }
@@ -119,6 +132,7 @@ const renderTree = (node, renderer) => {
     const children = (node && node.props && node.props.children.length)
                      ? node.props.children.map(n => renderTree(n, renderer))
                      : null
+    console.log(children, node.props, node)
     const props = Object.assign(node.props, { children })
     return renderer(node.type, props)
 }
