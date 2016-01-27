@@ -95,6 +95,17 @@ const transformWithConfig = (config) => (node) => {
                                        .map(c => config.classMap[c] || c)
                                        .join(' ')
     }
+
+    // TODO: is propMap a good name for this?
+    if (config.propMap) {
+        for (const k in config.propMap) {
+            const f = config.propMap[k]
+            // console.log(f, k, node.props[k])
+            if (typeof f !== 'function') break
+            node.props = Object.assign({}, node.props, f(node.props[k]))
+        }
+        // console.log(node.props)
+    }
     return node
 }
 
