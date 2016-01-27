@@ -1,28 +1,28 @@
 const test = require('tape')
 const react = require('react')
 const reactDOM = require('react-dom/server')
-const retree = require('..').create(react.createElement)
+const pile = require('..').create(react.createElement)
 
 const render = (dom) => reactDOM.renderToStaticMarkup(dom)
 
 
 test('simple matching without interpolation', (t) => {
-    const basicTag = retree`
+    const basicTag = pile`
         span
     `()
     t.strictEqual(render(basicTag), '<span></span>')
 
-    const output = retree`
+    const output = pile`
         div.foo
     `()
     t.strictEqual(render(output), '<div class="foo"></div>')
 
-    const multiClass = retree`
+    const multiClass = pile`
         div.foo.bar.baz
     `()
     t.strictEqual(render(multiClass), '<div class="foo bar baz"></div>')
 
-    const multiClass2 = retree`
+    const multiClass2 = pile`
         div.foo-1.bar_2
     `()
     t.strictEqual(render(multiClass2), '<div class="foo-1 bar_2"></div>')
@@ -30,14 +30,14 @@ test('simple matching without interpolation', (t) => {
 })
 
 test('discard empty or commented lines', (t) => {
-    const extraSpace = retree`
+    const extraSpace = pile`
 
         div.bar
 
     `()
     t.strictEqual(render(extraSpace), '<div class="bar"></div>')
 
-    const withComments = retree`
+    const withComments = pile`
         // please disregard this comment
         div.bar
         /div
@@ -47,12 +47,12 @@ test('discard empty or commented lines', (t) => {
 })
 
 test('type attribute shorthand', t => {
-    const emailInput = retree`
+    const emailInput = pile`
         input:email
     `()
     t.strictEqual(render(emailInput), '<input type="email"/>')
 
-    const submitButton = retree`
+    const submitButton = pile`
         button:submit
     `()
     t.strictEqual(render(submitButton), '<button type="submit"></button>')
@@ -62,7 +62,7 @@ test('type attribute shorthand', t => {
 
 
 test('passing in props as a template variable', t => {
-    const withVar = retree`
+    const withVar = pile`
         div ${{ id: 'baz' }}
     `()
     t.strictEqual(render(withVar), '<div id="baz"></div>')
@@ -70,12 +70,12 @@ test('passing in props as a template variable', t => {
 })
 
 test('string literal contents', t => {
-    const plainDiv = retree`
+    const plainDiv = pile`
         div "hi there"
     `()
     t.strictEqual(render(plainDiv), '<div>hi there</div>')
 
-    const withVar = retree`
+    const withVar = pile`
         div ${{ id: 'baz' }} "hi there"
     `()
     t.strictEqual(render(withVar), '<div id="baz">hi there</div>')
@@ -90,27 +90,27 @@ test('custom components', t => {
         }
     })
 
-    const noArgs = retree`
+    const noArgs = pile`
         ${C}
     `()
     t.strictEqual(render(noArgs), '<div>hi</div>')
 
-    const withStringChild = retree`
+    const withStringChild = pile`
         ${C} "yoyo"
     `()
     t.strictEqual(render(withStringChild), '<div>yoyo</div>')
 
-    const withProps = retree`
+    const withProps = pile`
         ${C} ${{ cls: 'foo' }}
     `()
     t.strictEqual(render(withProps), '<div class="foo">hi</div>')
 
-    const withPropsAndChild = retree`
+    const withPropsAndChild = pile`
         ${C} ${{ cls: 'foo' }} "yo"
     `()
     t.strictEqual(render(withPropsAndChild), '<div class="foo">yo</div>')
 
-    const withDoubleInterpolation = retree`
+    const withDoubleInterpolation = pile`
         ${C} ${{ cls: 'bar' }} ${ 'heyo' }
     `()
     t.strictEqual(render(withDoubleInterpolation), '<div class="bar">heyo</div>')
@@ -120,22 +120,22 @@ test('custom components', t => {
 
 
 test('interpolated string contents', t => {
-    const plainDiv = retree`
+    const plainDiv = pile`
         div ${{}} ${'yo'}
     `()
     t.strictEqual(render(plainDiv), '<div>yo</div>')
 
-    const stringVarOnly = retree`
+    const stringVarOnly = pile`
         div ${'yo'}
     `()
     t.strictEqual(render(stringVarOnly), '<div>yo</div>')
 
-    const stringVarEscaping = retree`
+    const stringVarEscaping = pile`
         div ${'yo & hi'}
     `()
     t.strictEqual(render(stringVarEscaping), '<div>yo &amp; hi</div>')
 
-    const nestedTemplates = retree`
+    const nestedTemplates = pile`
         div ${`this
 is
 multiline`}
@@ -143,7 +143,7 @@ multiline`}
     t.strictEqual(render(nestedTemplates), '<div>this\nis\nmultiline</div>')
 
     const x = 123
-    const nestedInterpolation = retree`
+    const nestedInterpolation = pile`
         div ${`this is ${x}`}
     `()
     t.strictEqual(render(nestedInterpolation), '<div>this is 123</div>')

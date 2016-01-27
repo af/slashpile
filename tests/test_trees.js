@@ -1,13 +1,13 @@
 const test = require('tape')
 const react = require('react')
 const reactDOM = require('react-dom/server')
-const retree = require('..').create(react.createElement)
+const pile = require('..').create(react.createElement)
 
 const render = (dom) => reactDOM.renderToStaticMarkup(dom)
 
 
 test('simple two-tag tree', (t) => {
-    const basicTag = retree`
+    const basicTag = pile`
         div
             span
     `()
@@ -16,21 +16,21 @@ test('simple two-tag tree', (t) => {
 })
 
 test('more involved nesting', (t) => {
-    const siblings = retree`
+    const siblings = pile`
         div
             span
             span
     `()
     t.strictEqual(render(siblings), '<div><span></span><span></span></div>')
 
-    const threeLevels = retree`
+    const threeLevels = pile`
         div
             span
                 span
     `()
     t.strictEqual(render(threeLevels), '<div><span><span></span></span></div>')
 
-    const multilevels = retree`
+    const multilevels = pile`
         form
             div
                 input
@@ -48,7 +48,7 @@ test('more involved nesting', (t) => {
 })
 
 test('multilevel example with parameters', t => {
-    const multilevels = retree`
+    const multilevels = pile`
         form ${{ method: 'post', action: '/foo' }}
             h1 "this is a form"
             fieldset.baz
