@@ -82,24 +82,24 @@ const nodesToTree = (nodes) => {
 }
 
 /**
-* Transform a node using config options (if some were given)
+* Transform a node using transforms (if some were given)
 *
-* @arg {object} [config] - A set of options that can transform nodes
+* @arg {object} [transforms] - A set of options that can transform nodes
 *   @arg {object} [classMap] - key/value mapping of input to output classNames
-* @return {object} - The node, possibly transformed by the provided config options
+* @return {object} - The node, possibly transformed by the provided transforms
 */
-const transformWithConfig = (config) => (node) => {
-    if (!config) return node
-    if (config.classMap && node.props.className) {
+const transformNode = (transforms) => (node) => {
+    if (!transforms) return node
+    if (transforms.classMap && node.props.className) {
         node.props.className = node.props.className.split(' ')
-                                       .map(c => config.classMap[c] || c)
+                                       .map(c => transforms.classMap[c] || c)
                                        .join(' ')
     }
 
     // TODO: is propMap a good name for this?
-    if (config.propMap) {
-        for (const k in config.propMap) {
-            const f = config.propMap[k]
+    if (transforms.propMap) {
+        for (const k in transforms.propMap) {
+            const f = transforms.propMap[k]
             // console.log(f, k, node.props[k])
             if (typeof f !== 'function') break
             node.props = Object.assign({}, node.props, f(node.props[k]))
@@ -118,7 +118,7 @@ const renderTree = (node, renderer) => {
     return renderer(node.type, props)
 }
 
-const create = (createEl, config) => {
+const create = (createEl, transforms) => {
     return function parseTemplate(templateChunks) {
         const params = [].slice.call(arguments, 1)
 
@@ -126,7 +126,7 @@ const create = (createEl, config) => {
             const lines = templateChunks.join(PARAM_PLACEHOLDER).split('\n')
             const nodeArray = lines.map(l => lineToNode(l, () => params.shift()))
                                    .filter(l => !!l)
-                                   .map(transformWithConfig(config))
+                                   .map(transformNode(transforms))
             const tree = nodesToTree(nodeArray)
             return renderTree(tree, createEl)
         }
