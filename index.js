@@ -46,10 +46,13 @@ const lineToNode = (line, takeParam) => {
     if (stringLiteralChild) parsedProps.children = [stringLiteralChild]
     else if (stringVarChild) parsedProps.children = [stringVarChild]
 
+    const mergedProps = (parsedProps.className && varProps.className)
+                        ? { className: parsedProps.className + ' ' + varProps.className }
+                        : {}
     return {
         indent,
         type: tagType,
-        props: Object.assign({}, parsedProps, varProps)    // FIXME: merge className
+        props: Object.assign({}, parsedProps, varProps, mergedProps)
     }
 }
 

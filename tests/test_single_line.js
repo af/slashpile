@@ -119,6 +119,20 @@ test('custom components', t => {
 })
 
 
+test('merging of className', t => {
+    const plainDiv = pile`
+        div.foo ${{ className: 'bar' }}
+    `()
+    t.strictEqual(render(plainDiv), '<div class="foo bar"></div>')
+
+    const multiclass = pile`
+        div.foo.goo ${{ className: 'bar baz' }}
+    `()
+    t.strictEqual(render(multiclass), '<div class="foo goo bar baz"></div>')
+    t.end()
+})
+
+
 test('interpolated string contents', t => {
     const plainDiv = pile`
         div ${{}} ${'yo'}
