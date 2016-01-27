@@ -81,6 +81,23 @@ const nodesToTree = (nodes) => {
     return tree
 }
 
+/**
+* Transform a node using config options (if some were given)
+*
+* @arg {object} [config] - A set of options that can transform nodes
+*   @arg {object} [classMap] - key/value mapping of input to output classNames
+* @return {object} - The node, possibly transformed by the provided config options
+*/
+const transformWithConfig = (config) => (node) => {
+    if (!config) return node
+    if (config.classMap && node.props.className) {
+        node.props.className = node.props.className.split(' ')
+                                       .map(c => config.classMap[c] || c)
+                                       .join(' ')
+    }
+    return node
+}
+
 const renderTree = (node, renderer) => {
     if (typeof node === 'string') return node
     const children = (node && node.props && node.props.children.length)
@@ -90,15 +107,16 @@ const renderTree = (node, renderer) => {
     return renderer(node.type, props)
 }
 
-const create = (createEl) => {
+const create = (createEl, config) => {
     return function parseTemplate(templateChunks) {
         const params = [].slice.call(arguments, 1)
 
-        return function renderTemplate(/* config */) {
+        return function renderTemplate() {
             const lines = templateChunks.join(PARAM_PLACEHOLDER).split('\n')
-            const parsedLines = lines.map(l => lineToNode(l, () => params.shift()))
-                                     .filter(l => !!l)
-            const tree = nodesToTree(parsedLines)
+            const nodeArray = lines.map(l => lineToNode(l, () => params.shift()))
+                                   .filter(l => !!l)
+                                   .map(transformWithConfig(config))
+            const tree = nodesToTree(nodeArray)
             return renderTree(tree, createEl)
         }
     }
