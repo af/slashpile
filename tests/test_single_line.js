@@ -1,9 +1,7 @@
 const test = require('tape')
 const react = require('react')
-const reactDOM = require('react-dom/server')
+const render = require('react-dom/server').renderToStaticMarkup
 const pile = require('..').create(react.createElement)
-
-const render = (dom) => reactDOM.renderToStaticMarkup(dom)
 
 
 test('simple matching without interpolation', (t) => {
