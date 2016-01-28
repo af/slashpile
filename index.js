@@ -85,12 +85,18 @@ const nodesToTree = (nodes) => {
 * Transform a node using transforms (if some were given)
 *
 * @arg {object} [transforms] - A set of options that can transform nodes
+*   @arg {object} [tagMap] - mapping of tagName to {new tagName,custom components}
 *   @arg {object} [classMap] - key/value mapping of input to output classNames
 *   @arg {object} [propExtend] - functions that convert a specified prop into other props
 * @return {object} - The node, possibly transformed by the provided transforms
 */
 const transformNode = (transforms) => (node) => {
     if (!transforms) return node
+
+    if (transforms.tagMap) {
+        node.type = transforms.tagMap[node.type] || node.type
+    }
+
     if (transforms.classMap && node.props.className) {
         node.props.className = node.props.className.split(' ')
                                        .map(c => transforms.classMap[c] || c)
@@ -104,6 +110,7 @@ const transformNode = (transforms) => (node) => {
             node.props = Object.assign({}, node.props, f(node.props[k]))
         }
     }
+
     return node
 }
 

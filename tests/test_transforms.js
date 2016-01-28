@@ -82,3 +82,41 @@ test('propExtend for react-native', (t) => {
 
     t.end()
 })
+
+
+test('tagMap with string values', t => {
+    const pile = require('..').create(react.createElement, {
+        tagMap: { foo: 'div', bar: 'span' }
+    })
+
+    const simple = pile`
+        foo
+    `()
+    t.deepEqual(render(simple), '<div></div>')
+
+    const classed = pile`
+        foo.bar.baz
+    `()
+    t.deepEqual(render(classed), '<div class="bar baz"></div>')
+
+    t.end()
+})
+
+test('tagMap with custom components', t => {
+    const C = (props) => react.DOM.div({ 'data-x': props.data }, props.label || 'hey')
+    const pile = require('..').create(react.createElement, {
+        tagMap: { View: C }
+    })
+
+    const simple = pile`
+        View
+    `()
+    t.deepEqual(render(simple), '<div>hey</div>')
+
+    const withProps = pile`
+        View ${{ label: 'yo', data: 123 }}
+    `()
+    t.deepEqual(render(withProps), '<div data-x="123">yo</div>')
+
+    t.end()
+})
