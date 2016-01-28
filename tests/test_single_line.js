@@ -130,6 +130,16 @@ test('merging of className', t => {
     t.end()
 })
 
+test('inputs without linebreaks', t => {
+    const plainDiv = pile`div`()
+    t.strictEqual(render(plainDiv), '<div></div>')
+
+    const classed = pile`div.foo.bar`()
+    t.strictEqual(render(classed), '<div class="foo bar"></div>')
+
+    t.end()
+})
+
 
 test('interpolated string contents', t => {
     const plainDiv = pile`

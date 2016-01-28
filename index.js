@@ -4,7 +4,7 @@
 // the line above the regex:
 const lineRegex = (
 //     (1)  (2)        (3)      ----(4)----     (5)           -(6)-    (7)
-    /^(\s+)(\w+|%)(?::(\w+))?(?:\.([\w\.-]+))* ?(%)? ?(?:(?:"([^"]*)")|(%))?/
+    /^(\s*)(\w+|%)(?::(\w+))?(?:\.([\w\.-]+))* ?(%)? ?(?:(?:"([^"]*)")|(%))?/
 )
 const commentRegex = /^\s+\//
 const PARAM_PLACEHOLDER = '%'        // Placeholder string for interpolated values
