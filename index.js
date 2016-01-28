@@ -86,6 +86,7 @@ const nodesToTree = (nodes) => {
 *
 * @arg {object} [transforms] - A set of options that can transform nodes
 *   @arg {object} [classMap] - key/value mapping of input to output classNames
+*   @arg {object} [propExtend] - functions that convert a specified prop into other props
 * @return {object} - The node, possibly transformed by the provided transforms
 */
 const transformNode = (transforms) => (node) => {
@@ -96,15 +97,12 @@ const transformNode = (transforms) => (node) => {
                                        .join(' ')
     }
 
-    // TODO: is propMap a good name for this?
-    if (transforms.propMap) {
-        for (const k in transforms.propMap) {
-            const f = transforms.propMap[k]
-            // console.log(f, k, node.props[k])
+    if (transforms.propExtend) {
+        for (const k in transforms.propExtend) {
+            const f = transforms.propExtend[k]
             if (typeof f !== 'function') break
             node.props = Object.assign({}, node.props, f(node.props[k]))
         }
-        // console.log(node.props)
     }
     return node
 }
