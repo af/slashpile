@@ -19,12 +19,21 @@ const PARAM_PLACEHOLDER = '%'        // Placeholder string for interpolated valu
 */
 const lineToNode = (line, takeParam) => {
     if (commentRegex.test(line)) return null
-    if (line.match(/^\s+> %$/)) {
-        // array children case (WIP)
+
+    // Single-param line case (WIP)
+    if (line.match(/^\s+%$/)) {
+        const param = takeParam()
+        if (!param) return null
+
+        const paramIsArray = Array.isArray(param)
+        const paramIsFunc = typeof param === 'function'
         return {
             indent: line.length - 1,
-            props: {},
-            array: takeParam()
+            array: paramIsArray ? param : null,
+            type: paramIsFunc ? param : null,
+            props: {
+                children: []
+            },
         }
     }
 
@@ -73,7 +82,6 @@ const lineToNode = (line, takeParam) => {
 * @return {object} - A tree of parsed nodes
 */
 const nodesToTree = (nodes) => {
-    console.log(nodes)
     if (!nodes || !nodes.length) throw new Error('Invalid input to nodesToTree')
 
     let tree = nodes[0]
@@ -132,8 +140,7 @@ const renderTree = (node, renderer) => {
     const children = (node && node.props && node.props.children.length)
                      ? node.props.children.map(n => renderTree(n, renderer))
                      : null
-    console.log(children, node.props, node)
-    const props = Object.assign(node.props, { children })
+    const props = Object.assign({}, node.props, { children })
     return renderer(node.type, props)
 }
 

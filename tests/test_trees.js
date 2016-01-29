@@ -69,9 +69,9 @@ test('multilevel example with parameters', t => {
 })
 
 test('array mapped children', t => {
-    const multilevels = retree`
+    const multilevels = pile`
         ul
-            > ${ ['one', 'two', 'three'].map(x => retree`
+            ${ ['one', 'two', 'three'].map(x => pile`
                 li ${{ key: x }} ${x}
             `()) }
     `()
@@ -79,7 +79,7 @@ test('array mapped children', t => {
         <li>one</li>
         <li>two</li>
         <li>three</li>
-    `.replace(/\n\s+/g, ''))
+    </ul>`.replace(/\n\s+/g, ''))
 
     t.end()
 })
