@@ -68,10 +68,11 @@ test('multilevel example with parameters', t => {
     t.end()
 })
 
-test('array mapped children', t => {
+test('array children (lines starting with ">")', t => {
+    const items = ['one', 'two', 'three']
     const multilevels = pile`
         ul
-            ${ ['one', 'two', 'three'].map(x => pile`
+            > ${ items.map(x => pile`
                 li ${{ key: x }} ${x}
             `()) }
     `()
@@ -80,6 +81,13 @@ test('array mapped children', t => {
         <li>two</li>
         <li>three</li>
     </ul>`.replace(/\n\s+/g, ''))
+
+    const emptyItems = []
+    const empty = pile`
+        ul
+            > ${ emptyItems }
+    `()
+    t.strictEqual(render(empty), `<ul></ul>`)
 
     t.end()
 })

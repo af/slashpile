@@ -7,6 +7,7 @@ const lineRegex = (
     /^(\s*)(\w+|%)(?::(\w+))?(?:\.([\w\.-]+))* ?(%)? ?(?:(?:"([^"]*)")|(%))?/
 )
 const commentRegex = /^\s+\//
+const arrayChildRegex = /^\s+> %$/
 const PARAM_PLACEHOLDER = '%'        // Placeholder string for interpolated values
 
 
@@ -20,21 +21,11 @@ const PARAM_PLACEHOLDER = '%'        // Placeholder string for interpolated valu
 const lineToNode = (line, takeParam) => {
     if (commentRegex.test(line)) return null
 
-    // Single-param line case (WIP)
-    if (line.match(/^\s+%$/)) {
+    // Lines of the form '> %' accept a single Array parameter
+    if (arrayChildRegex.test(line)) {
         const param = takeParam()
-        if (!param) return null
-
-        const paramIsArray = Array.isArray(param)
-        const paramIsFunc = typeof param === 'function'
-        return {
-            indent: line.length - 1,
-            array: paramIsArray ? param : null,
-            type: paramIsFunc ? param : null,
-            props: {
-                children: []
-            },
-        }
+        if (!param || !param.length) return null
+        return { indent: line.length - 1, array: param }
     }
 
     const match = lineRegex.exec(line)
