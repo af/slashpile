@@ -1,10 +1,10 @@
 'use strict'
 
-// Main regex for parsing input lines. The numbered group matches are labeled in
-// the line above the regex:
+// Main regex for parsing input lines. The numbered group matches are labeled
+// above the regex.
 const lineRegex = (
-//     (1)  (2)        (3)      ----(4)----     (5)           -(6)-    (7)
-    /^(\s*)(\w+|%)(?::(\w+))?(?:\.([\w\.-]+))* ?(%)? ?(?:(?:"([^"]*)")|(%))?/
+//     -1-  --2--      -3-         ----4---      5            --6--     7
+    /^(\s*)(\w+|%)(?::(\w+))?(?:\.([\w\.-]+))? ?(%)? ?(?:(?:"([^"]*)")|(%))?/
 )
 const commentRegex = /^\s+\//
 const arrayChildRegex = /^\s+> %$/
@@ -135,6 +135,13 @@ const transformNode = (transforms) => (node) => {
     return node
 }
 
+/**
+* Recursively render a vdom tree with the given renderer.
+*
+* @arg {object} node - A tree node (in slashpile's internal format)
+* @arg {function} renderer - A vdom factory with React.createElement's signature
+* @return {object} - A vdom tree, with nodes processed by the given renderer
+*/
 const renderTree = (node, renderer) => {
     if (typeof node === 'string') return node
     if (!node || node.prune || !node.type) return null
@@ -145,6 +152,13 @@ const renderTree = (node, renderer) => {
     return renderer(node.type, props)
 }
 
+/**
+* Create a new slashpile client.
+*
+* @arg {function} createEl - A vdom element creator, eg. React.createElement()
+* @arg {object} [transforms] - Optional transforms for each node (see transformNode())
+* @return {function} - A "client" function that accepts a string template.
+*/
 const create = (createEl, transforms) => {
     return function parseTemplate(templateChunks) {
         const params = [].slice.call(arguments, 1)
