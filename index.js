@@ -113,6 +113,7 @@ const nodesToTree = (nodes) => {
 */
 const transformNode = (transforms) => (node) => {
     if (!transforms) return node
+    if (!node || !node.props) return node
 
     if (transforms.tagMap) {
         node.type = transforms.tagMap[node.type] || node.type
