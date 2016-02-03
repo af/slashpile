@@ -146,7 +146,9 @@ const transformNode = (transforms) => (node) => {
 const renderTree = (node, renderer) => {
     if (typeof node === 'string') return node
     if (!node || node.prune || !node.type) return null
-    const children = (node && node.props && node.props.children.length)
+    const hasChildren = (node && node.props && node.props.children.length &&
+                         node.props.children.map)
+    const children = hasChildren
                      ? node.props.children.map(n => renderTree(n, renderer))
                      : null
     const props = Object.assign({}, node.props, { children })
