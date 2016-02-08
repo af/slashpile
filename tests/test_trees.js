@@ -1,32 +1,34 @@
-const test = require('tape')
 const react = require('react')
 const render = require('react-dom/server').renderToStaticMarkup
 const pile = require('..').create(react.createElement)
 
+const painless = require('painless')
+const test = painless.createGroup()
+const assert = painless.assert
 
-test('simple two-tag tree', (t) => {
+
+test('simple two-tag tree', () => {
     const basicTag = pile`
         div
             span
     `()
-    t.strictEqual(render(basicTag), '<div><span></span></div>')
-    t.end()
+    assert.strictEqual(render(basicTag), '<div><span></span></div>')
 })
 
-test('more involved nesting', (t) => {
+test('more involved nesting', () => {
     const siblings = pile`
         div
             span
             span
     `()
-    t.strictEqual(render(siblings), '<div><span></span><span></span></div>')
+    assert.strictEqual(render(siblings), '<div><span></span><span></span></div>')
 
     const threeLevels = pile`
         div
             span
                 span
     `()
-    t.strictEqual(render(threeLevels), '<div><span><span></span></span></div>')
+    assert.strictEqual(render(threeLevels), '<div><span><span></span></span></div>')
 
     const multilevels = pile`
         form
@@ -36,16 +38,14 @@ test('more involved nesting', (t) => {
             div
                 input
     `()
-    t.strictEqual(render(multilevels), `<form>
+    assert.strictEqual(render(multilevels), `<form>
         <div><input/><select></select></div>
         <div><input/></div>
     </form>
     `.replace(/\n\s+/g, ''))
-
-    t.end()
 })
 
-test('multilevel example with parameters', t => {
+test('multilevel example with parameters', () => {
     const multilevels = pile`
         form ${{ method: 'post', action: '/foo' }}
             h1 "this is a form"
@@ -55,7 +55,7 @@ test('multilevel example with parameters', t => {
             div
                 span "hey there"
     `()
-    t.strictEqual(render(multilevels), `<form method="post" action="/foo">
+    assert.strictEqual(render(multilevels), `<form method="post" action="/foo">
         <h1>this is a form</h1>
         <fieldset class="baz">
             <input type="email"/>
@@ -64,11 +64,9 @@ test('multilevel example with parameters', t => {
         <div><span>hey there</span></div>
     </form>
     `.replace(/\n\s+/g, ''))
-
-    t.end()
 })
 
-test('array children (lines starting with ">")', t => {
+test('array children (lines starting with ">")', () => {
     const items = ['one', 'two', 'three']
     const multilevels = pile`
         ul
@@ -76,7 +74,7 @@ test('array children (lines starting with ">")', t => {
                 li ${{ key: x }} ${x}
             `()) }
     `()
-    t.strictEqual(render(multilevels), `<ul>
+    assert.strictEqual(render(multilevels), `<ul>
         <li>one</li>
         <li>two</li>
         <li>three</li>
@@ -87,7 +85,5 @@ test('array children (lines starting with ">")', t => {
         ul
             > ${ emptyItems }
     `()
-    t.strictEqual(render(empty), `<ul></ul>`)
-
-    t.end()
+    assert.strictEqual(render(empty), `<ul></ul>`)
 })

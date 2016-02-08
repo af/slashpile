@@ -4,8 +4,8 @@
   "description": "Virtual dom with template strings",
   "main": "index.js",
   "scripts": {
-    "test": "tape tests/*.js",
-    "coverage": "istanbul cover tape -- tests/*.js"
+    "test": "painless tests/*.js",
+    "cover": "istanbul cover painless -- tests/*.js"
   },
   "keywords": [
     "react",
@@ -16,8 +16,8 @@
   "author": "Aaron Franks (http://aaronfranks.com/)",
   "license": "MIT",
   "devDependencies": {
+    "painless": "0.7.0",
     "react": "0.14.6",
-    "react-dom": "0.14.6",
-    "tape": "4.4.0"
+    "react-dom": "0.14.6"
   }
 }

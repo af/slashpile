@@ -1,9 +1,13 @@
-const test = require('tape')
 const react = require('react')
 const render = require('react-dom/server').renderToStaticMarkup
 
+const painless = require('painless')
+const test = painless.createGroup()
+const assert = painless.assert
 
-test('classMap', (t) => {
+
+
+test('classMap', () => {
     const pile = require('..').create(react.createElement, {
         classMap: { foo: 'bar', random: 'stuff' }
     })
@@ -11,23 +15,21 @@ test('classMap', (t) => {
     const basicTag = pile`
         span.foo
     `()
-    t.strictEqual(render(basicTag), '<span class="bar"></span>')
+    assert.strictEqual(render(basicTag), '<span class="bar"></span>')
 
     const nonMatchesUntouched = pile`
         span.asdf
     `()
-    t.strictEqual(render(nonMatchesUntouched), '<span class="asdf"></span>')
+    assert.strictEqual(render(nonMatchesUntouched), '<span class="asdf"></span>')
 
     const mixedClasses = pile`
         span.foo.asdf
     `()
-    t.strictEqual(render(mixedClasses), '<span class="bar asdf"></span>')
-
-    t.end()
+    assert.strictEqual(render(mixedClasses), '<span class="bar asdf"></span>')
 })
 
 
-test('propExtend', (t) => {
+test('propExtend', () => {
     const styles = { foo: { color: 'red' }, bar: { color: 'green' } }
     const pile = require('..').create(react.createElement, {
         propExtend: {
@@ -43,18 +45,16 @@ test('propExtend', (t) => {
     const basicTag = pile`
         span.foo
     `()
-    t.strictEqual(render(basicTag), '<span class="foo" style="color:red;"></span>')
+    assert.strictEqual(render(basicTag), '<span class="foo" style="color:red;"></span>')
 
     const noStyles = pile`
         span
     `()
-    t.strictEqual(render(noStyles), '<span></span>')
-
-    t.end()
+    assert.strictEqual(render(noStyles), '<span></span>')
 })
 
 
-test('propExtend for react-native', (t) => {
+test('propExtend for react-native', () => {
     const styles = { foo: { color: 'red' }, bar: { color: 'green' } }
     const pile = require('..').create(react.createElement, {
         propExtend: {
@@ -68,23 +68,21 @@ test('propExtend for react-native', (t) => {
     const basicTag = pile`
         span.foo
     `()
-    t.deepEqual(basicTag.props.style, [{ color: 'red' }])
+    assert.deepEqual(basicTag.props.style, [{ color: 'red' }])
 
     const multiStyles = pile`
         span.foo.bar
     `()
-    t.deepEqual(multiStyles.props.style, [{ color: 'red' }, { color: 'green' }])
+    assert.deepEqual(multiStyles.props.style, [{ color: 'red' }, { color: 'green' }])
 
     const noStyles = pile`
         span
     `()
-    t.deepEqual(noStyles.props.style, null)
-
-    t.end()
+    assert.deepEqual(noStyles.props.style, null)
 })
 
 
-test('tagMap with string values', t => {
+test('tagMap with string values', () => {
     const pile = require('..').create(react.createElement, {
         tagMap: { foo: 'div', bar: 'span' }
     })
@@ -92,17 +90,15 @@ test('tagMap with string values', t => {
     const simple = pile`
         foo
     `()
-    t.deepEqual(render(simple), '<div></div>')
+    assert.deepEqual(render(simple), '<div></div>')
 
     const classed = pile`
         foo.bar.baz
     `()
-    t.deepEqual(render(classed), '<div class="bar baz"></div>')
-
-    t.end()
+    assert.deepEqual(render(classed), '<div class="bar baz"></div>')
 })
 
-test('tagMap with custom components', t => {
+test('tagMap with custom components', () => {
     const C = (props) => react.DOM.div({ 'data-x': props.data }, props.label || 'hey')
     const pile = require('..').create(react.createElement, {
         tagMap: { View: C }
@@ -111,12 +107,10 @@ test('tagMap with custom components', t => {
     const simple = pile`
         View
     `()
-    t.deepEqual(render(simple), '<div>hey</div>')
+    assert.deepEqual(render(simple), '<div>hey</div>')
 
     const withProps = pile`
         View ${{ label: 'yo', data: 123 }}
     `()
-    t.deepEqual(render(withProps), '<div data-x="123">yo</div>')
-
-    t.end()
+    assert.deepEqual(render(withProps), '<div data-x="123">yo</div>')
 })
