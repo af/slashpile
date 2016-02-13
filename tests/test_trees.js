@@ -3,7 +3,7 @@ const render = require('react-dom/server').renderToStaticMarkup
 const pile = require('..').create(react.createElement)
 
 const painless = require('painless')
-const test = painless.createGroup()
+const test = painless.createGroup('Tree inputs')
 const assert = painless.assert
 
 

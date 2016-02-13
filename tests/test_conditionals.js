@@ -2,7 +2,7 @@ const painless = require('painless')
 const react = require('react')
 const render = require('react-dom/server').renderToStaticMarkup
 const pile = require('..').create(react.createElement)
-const test = painless.createGroup()
+const test = painless.createGroup('Conditional elements')
 const assert = painless.assert
 
 
