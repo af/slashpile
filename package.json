@@ -16,7 +16,7 @@
   "author": "Aaron Franks (http://aaronfranks.com/)",
   "license": "MIT",
   "devDependencies": {
-    "painless": "0.8.3",
+    "painless": "0.9.4",
     "react": "0.14.6",
     "react-dom": "0.14.6"
   }
