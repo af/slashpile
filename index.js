@@ -84,13 +84,13 @@ const lineToNode = (line, takeParam) => {
 const nodesToTree = (nodes) => {
     if (!nodes || !nodes.length) throw new Error('Invalid input to nodesToTree')
 
-    let tree = nodes[0]
-    for (var i = 1, l = nodes.length; i < l; i++) {
-        let n = nodes[i]
+    const tree = nodes[0]
+    for (let i = 1, l = nodes.length; i < l; i++) {
+        const n = nodes[i]
 
         // Go backwards through the tree and find the node's parent: it's the
         // closest node with a smaller indent than this one.
-        for (var j = i - 1; j >= 0; j--) {
+        for (let j = i - 1; j >= 0; j--) {
             if (n.indent > nodes[j].indent) {
                 const parent = nodes[j]
                 if (n.array) parent.props.children = parent.props.children.concat(n.array)
