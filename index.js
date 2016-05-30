@@ -151,7 +151,15 @@ const renderTree = (node, renderer) => {
     const children = hasChildren
                      ? node.props.children.map(n => renderTree(n, renderer))
                      : null
-    const props = Object.assign({}, node.props, { children })
+    // If only one child (that's not a string), inline it instead of wrapping
+    // with an array. This fixes problems with react-redux's <Provider>:
+    const inlineSingleChild = (Array.isArray(children) &&
+                               children.length === 1 &&
+                               typeof children[0] !== 'string')
+    const props = Object.assign({}, node.props, {
+        children: inlineSingleChild ? children[0] : children
+    })
+
     return renderer(node.type, props)
 }
 
