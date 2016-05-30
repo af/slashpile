@@ -4,6 +4,7 @@
   "description": "Virtual dom with template strings",
   "main": "index.js",
   "scripts": {
+    "lint": "eslint *.js tests/*.js",
     "test": "painless tests/*.js -r spec",
     "cover": "istanbul cover painless -- tests/*.js"
   },
@@ -16,6 +17,7 @@
   "author": "Aaron Franks (http://aaronfranks.com/)",
   "license": "MIT",
   "devDependencies": {
+    "eslint": "2.11.0",
     "painless": "0.9.4",
     "react": "0.14.6",
     "react-dom": "0.14.6"
