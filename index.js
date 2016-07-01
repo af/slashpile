@@ -142,15 +142,19 @@ const transformNode = (transforms) => (node) => {
 const renderTree = (node, renderer) => {
     if (typeof node === 'string') return node
     if (!node || node.prune || !node.type) return null
-    const hasChildren = (node && node.props && node.props.children.length &&
-                         node.props.children.map)
+    const hasChildren = (node && node.props && node.props.children &&
+                         node.props.children.length && node.props.children.map)
     const children = hasChildren
                      ? node.props.children.map(n => renderTree(n, renderer))
                      : null
-    // If only one child (that's not a string), inline it instead of wrapping
+
+    // Attempt to detect whether this component expects a single element as
+    // its children (instead of an array as usual).
+    // If this is the case, inline the single child instead of wrapping
     // with an array. This fixes problems with react-redux's <Provider>:
-    const inlineSingleChild = (Array.isArray(children) &&
-                               children.length === 1 &&
+    const inlineSingleChild = (typeof node.type === 'function' &&
+                               node.type.propTypes && node.type.propTypes.children &&
+                               Array.isArray(children) && children.length === 1 &&
                                typeof children[0] !== 'string')
     const props = Object.assign({}, node.props, {
         children: inlineSingleChild ? children[0] : children
