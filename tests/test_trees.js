@@ -66,11 +66,11 @@ test('multilevel example with parameters', () => {
     `.replace(/\n\s+/g, ''))
 })
 
-test('array children (lines starting with ">")', () => {
+test('array children', () => {
     const items = ['one', 'two', 'three']
     const multilevels = pile`
         ul
-            > ${ items.map(x => pile`
+            ${ items.map(x => pile`
                 li ${{ key: x }} ${x}
             `()) }
     `()

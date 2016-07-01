@@ -7,7 +7,6 @@ const lineRegex = (
     /^(\s*)(\w+|%)(?::(\w+))?(?:\.([\w\.-]+))? ?(%)? ?(?:(?:"([^"]*)")|(%))?/
 )
 const commentRegex = /^\s+\//
-const arrayChildRegex = /^\s+> %$/
 const PARAM_PLACEHOLDER = '%'        // Placeholder string for interpolated values
 
 
@@ -21,13 +20,6 @@ const PARAM_PLACEHOLDER = '%'        // Placeholder string for interpolated valu
 const lineToNode = (line, takeParam) => {
     if (commentRegex.test(line)) return null
 
-    // Lines of the form '> %' accept a single Array parameter
-    if (arrayChildRegex.test(line)) {
-        const param = takeParam()
-        if (!param || !param.length) return null
-        return { indent: line.length - 1, array: param }
-    }
-
     const match = lineRegex.exec(line)
     if (!match) return null
 
@@ -39,7 +31,11 @@ const lineToNode = (line, takeParam) => {
     }
 
     let tagType = match[2]
-    if (tagType === PARAM_PLACEHOLDER) tagType = takeParam()
+    if (tagType === PARAM_PLACEHOLDER) {
+        tagType = takeParam()
+
+        if (Array.isArray(tagType)) return { indent, array: tagType }
+    }
 
     // If PARAM_PLACEHOLDER was matched, template var(s) were passed in for props and/or
     // a string child:
