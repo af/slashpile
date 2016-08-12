@@ -62,7 +62,7 @@ const lineToNode = (line, takeParam) => {
 
     const mergedProps = (parsedProps.className && varProps.className)
                         ? { className: parsedProps.className + ' ' + varProps.className }
-                        : {}
+                        : { className: parsedProps.className || varProps.className }
     return {
         indent,
         prune,
