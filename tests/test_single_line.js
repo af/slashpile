@@ -132,6 +132,10 @@ test('inputs without linebreaks', () => {
     assert.strictEqual(render(classed), '<div class="foo bar"></div>')
 })
 
+test('children of type Number', () => {
+    const numChild = pile`div ${7}`()
+    assert.strictEqual(render(numChild), '<div>7</div>')
+})
 
 test('interpolated string contents', () => {
     const plainDiv = pile`

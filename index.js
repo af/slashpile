@@ -41,7 +41,7 @@ const lineToNode = (line, takeParam) => {
     // a string child:
     let varProps = match[5] ? takeParam() : {}
     let stringVarChild = match[7]
-    if (typeof varProps === 'string') {
+    if (typeof varProps === 'string' || typeof varProps === 'number') {
         stringVarChild = varProps
         varProps = {}
     } else if (stringVarChild) {
@@ -140,7 +140,7 @@ const transformNode = (transforms) => (node) => {
 * @return {object} - A vdom tree, with nodes processed by the given renderer
 */
 const renderTree = (node, renderer) => {
-    if (typeof node === 'string') return node
+    if (typeof node !== 'object') return node
     if (!node || node.prune || !node.type) return null
     const hasChildren = (node && node.props && node.props.children &&
                          node.props.children.length && node.props.children.map)
