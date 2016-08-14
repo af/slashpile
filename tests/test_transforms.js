@@ -78,7 +78,7 @@ test('propExtend for react-native', () => {
     const noStyles = pile`
         span
     `()
-    assert.deepEqual(noStyles.props.style, null)
+    assert.deepEqual(noStyles.props.style, undefined)
 })
 
 
