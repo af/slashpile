@@ -8,6 +8,7 @@ const lineRegex = (
 )
 const commentRegex = /^\s+\//
 const PARAM_PLACEHOLDER = '%'        // Placeholder string for interpolated values
+const isPlainChild = x => (typeof x === 'string' || typeof x === 'number')
 
 
 /**
@@ -41,10 +42,10 @@ const lineToNode = (line, takeParam) => {
     // a string child:
     let varProps = match[5] ? takeParam() : {}
     let stringVarChild = match[7]
-    if (typeof varProps === 'string' || typeof varProps === 'number') {
+    if (isPlainChild(varProps)) {
         stringVarChild = varProps
         varProps = {}
-    } else if (stringVarChild) {
+    } else if (isPlainChild(stringVarChild)) {
         stringVarChild = takeParam()
     }
 
@@ -58,7 +59,7 @@ const lineToNode = (line, takeParam) => {
 
     const stringLiteralChild = match[6]
     if (stringLiteralChild) parsedProps.children = [stringLiteralChild]
-    else if (stringVarChild) parsedProps.children = [stringVarChild]
+    else if (isPlainChild(stringVarChild)) parsedProps.children = [stringVarChild]
 
     const mergedProps = (parsedProps.className && varProps.className)
                         ? { className: parsedProps.className + ' ' + varProps.className }

@@ -135,6 +135,9 @@ test('inputs without linebreaks', () => {
 test('children of type Number', () => {
     const numChild = pile`div ${7}`()
     assert.strictEqual(render(numChild), '<div>7</div>')
+
+    const zeroChild = pile`div ${0}`()
+    assert.strictEqual(render(zeroChild), '<div>0</div>')
 })
 
 test('interpolated string contents', () => {
