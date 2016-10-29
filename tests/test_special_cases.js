@@ -25,6 +25,6 @@ test('simple two-tag tree', () => {
     const basicTag = pile`
         ${SingleChildComponent}
             span
-    `()
+    `
     assert.strictEqual(render(basicTag), '<div><span></span></div>')
 })

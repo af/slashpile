@@ -11,7 +11,7 @@ test('simple two-tag tree', () => {
     const basicTag = pile`
         div
             span
-    `()
+    `
     assert.strictEqual(render(basicTag), '<div><span></span></div>')
 })
 
@@ -20,14 +20,14 @@ test('more involved nesting', () => {
         div
             span
             span
-    `()
+    `
     assert.strictEqual(render(siblings), '<div><span></span><span></span></div>')
 
     const threeLevels = pile`
         div
             span
                 span
-    `()
+    `
     assert.strictEqual(render(threeLevels), '<div><span><span></span></span></div>')
 
     const multilevels = pile`
@@ -37,7 +37,7 @@ test('more involved nesting', () => {
                 select
             div
                 input
-    `()
+    `
     assert.strictEqual(render(multilevels), `<form>
         <div><input/><select></select></div>
         <div><input/></div>
@@ -54,7 +54,7 @@ test('multilevel example with parameters', () => {
                 select ${{ name: 'asdf' }}
             div
                 span "hey there"
-    `()
+    `
     assert.strictEqual(render(multilevels), `<form method="post" action="/foo">
         <h1>this is a form</h1>
         <fieldset class="baz">
@@ -72,8 +72,8 @@ test('array children', () => {
         ul
             ${ items.map(x => pile`
                 li ${{ key: x }} ${x}
-            `()) }
-    `()
+            `) }
+    `
     assert.strictEqual(render(multilevels), `<ul>
         <li>one</li>
         <li>two</li>
@@ -84,6 +84,6 @@ test('array children', () => {
     const empty = pile`
         ul
             > ${ emptyItems }
-    `()
+    `
     assert.strictEqual(render(empty), `<ul></ul>`)
 })

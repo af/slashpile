@@ -14,17 +14,17 @@ test('classMap', () => {
 
     const basicTag = pile`
         span.foo
-    `()
+    `
     assert.strictEqual(render(basicTag), '<span class="bar"></span>')
 
     const nonMatchesUntouched = pile`
         span.asdf
-    `()
+    `
     assert.strictEqual(render(nonMatchesUntouched), '<span class="asdf"></span>')
 
     const mixedClasses = pile`
         span.foo.asdf
-    `()
+    `
     assert.strictEqual(render(mixedClasses), '<span class="bar asdf"></span>')
 })
 
@@ -44,12 +44,12 @@ test('propExtend', () => {
 
     const basicTag = pile`
         span.foo
-    `()
+    `
     assert.strictEqual(render(basicTag), '<span class="foo" style="color:red;"></span>')
 
     const noStyles = pile`
         span
-    `()
+    `
     assert.strictEqual(render(noStyles), '<span></span>')
 })
 
@@ -67,17 +67,17 @@ test('propExtend for react-native', () => {
 
     const basicTag = pile`
         span.foo
-    `()
+    `
     assert.deepEqual(basicTag.props.style, [{ color: 'red' }])
 
     const multiStyles = pile`
         span.foo.bar
-    `()
+    `
     assert.deepEqual(multiStyles.props.style, [{ color: 'red' }, { color: 'green' }])
 
     const noStyles = pile`
         span
-    `()
+    `
     assert.deepEqual(noStyles.props.style, undefined)
 })
 
@@ -89,12 +89,12 @@ test('tagMap with string values', () => {
 
     const simple = pile`
         foo
-    `()
+    `
     assert.deepEqual(render(simple), '<div></div>')
 
     const classed = pile`
         foo.bar.baz
-    `()
+    `
     assert.deepEqual(render(classed), '<div class="bar baz"></div>')
 })
 
@@ -106,11 +106,11 @@ test('tagMap with custom components', () => {
 
     const simple = pile`
         View
-    `()
+    `
     assert.deepEqual(render(simple), '<div>hey</div>')
 
     const withProps = pile`
         View ${{ label: 'yo', data: 123 }}
-    `()
+    `
     assert.deepEqual(render(withProps), '<div data-x="123">yo</div>')
 })

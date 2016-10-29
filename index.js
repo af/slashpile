@@ -174,15 +174,12 @@ const renderTree = (node, renderer) => {
 const create = (createEl, transforms) => {
     return function parseTemplate(templateChunks) {
         const params = [].slice.call(arguments, 1)
-
-        return function renderTemplate() {
-            const lines = templateChunks.join(PARAM_PLACEHOLDER).split('\n')
-            const nodeArray = lines.map(l => lineToNode(l, () => params.shift()))
-                                   .filter(l => !!l)
-                                   .map(transformNode(transforms))
-            const tree = nodesToTree(nodeArray)
-            return renderTree(tree, createEl)
-        }
+        const lines = templateChunks.join(PARAM_PLACEHOLDER).split('\n')
+        const nodeArray = lines.map(l => lineToNode(l, () => params.shift()))
+                               .filter(l => !!l)
+                               .map(transformNode(transforms))
+        const tree = nodesToTree(nodeArray)
+        return renderTree(tree, createEl)
     }
 }
 
