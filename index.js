@@ -50,14 +50,6 @@ const lineToNode = (line, takeParam) => {
         stringVarChild = takeParam()
     }
 
-    // Support a special "$if" prop that allows conditional rendering of
-    // this node and its descendents:
-    let prune = false
-    if (varProps && varProps.$if !== undefined) {
-        if (!varProps.$if) prune = true
-        delete varProps.$if
-    }
-
     const stringLiteralChild = match[6]
     if (stringLiteralChild) parsedProps.children = [stringLiteralChild]
     else if (isPlainChild(stringVarChild)) parsedProps.children = [stringVarChild]
@@ -67,7 +59,6 @@ const lineToNode = (line, takeParam) => {
                         : { className: parsedProps.className || varProps.className }
     return {
         indent,
-        prune,
         type: tagType,
         props: Object.assign({}, parsedProps, varProps, mergedProps)
     }
@@ -143,7 +134,7 @@ const transformNode = (transforms) => (node) => {
 */
 const renderTree = (node, renderer) => {
     if (typeof node !== 'object') return node
-    if (!node || node.prune || !node.type) return null
+    if (!node || !node.type) return null
     const hasChildren = (node && node.props && node.props.children &&
                          node.props.children.length && node.props.children.map)
     const children = hasChildren

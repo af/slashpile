@@ -10,29 +10,6 @@ const assert = painless.assert
 const C = () => react.DOM.div(null, 'hi')
 
 
-test('$if', () => {
-    const ifFalse = pile`
-        div.wrap
-            div.inner ${{ $if: false }}
-    `
-    assert.strictEqual(render(ifFalse), `<div class="wrap"></div>`)
-
-    const ifTrue = pile`
-        div.wrap
-            div.inner ${{ $if: true }}
-    `
-    assert.strictEqual(render(ifTrue),
-                       `<div class="wrap"><div class="inner"></div></div>`)
-
-    const falseTree = pile`
-        div.wrap
-            div.inner ${{ $if: false }}
-                span.hi "hi"
-                span.yo "yo"
-    `
-    assert.strictEqual(render(falseTree), `<div class="wrap"></div>`)
-})
-
 test('&& expressions', () => {
     const conditionalTagname = pile`
         div.wrap
