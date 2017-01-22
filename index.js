@@ -40,7 +40,8 @@ const lineToNode = (line, takeParam) => {
 
     // If PARAM_PLACEHOLDER was matched, template var(s) were passed in for props and/or
     // a string child:
-    let varProps = match[5] ? takeParam() : {}
+    let varProps = match[5] && takeParam()
+    if (varProps == null) varProps = {}
     let stringVarChild = match[7]
     if (isPlainChild(varProps)) {
         stringVarChild = varProps
