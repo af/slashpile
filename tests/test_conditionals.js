@@ -36,13 +36,13 @@ test('$if', () => {
 test('&& expressions', () => {
     const conditionalTagname = pile`
         div.wrap
-            ${ false && 'div' }.inner
+            ${false && 'div'}.inner
     `
     assert.strictEqual(render(conditionalTagname), `<div class="wrap"></div>`)
 
     const conditionalComponent = pile`
         div.wrap
-            ${ false && C }.inner
+            ${false && C}.inner
     `
     assert.strictEqual(render(conditionalComponent), `<div class="wrap"></div>`)
 })
@@ -51,7 +51,7 @@ test('ternary component type', () => {
     const pred = true
     const conditionalType = pile`
         div.wrap
-            ${ pred ? 'div' : C }.inner
+            ${pred ? 'div' : C}.inner
     `
     assert.strictEqual(render(conditionalType),
                   `<div class="wrap"><div class="inner"></div></div>`)

@@ -79,7 +79,7 @@ test('string literal contents', () => {
 
 test('custom components', () => {
     const C = react.createClass({
-        render: function() {
+        render() {
             const p = { className: this.props.cls }
             return react.DOM.div(p, this.props.children || 'hi')
         }
@@ -106,7 +106,7 @@ test('custom components', () => {
     assert.strictEqual(render(withPropsAndChild), '<div class="foo">yo</div>')
 
     const withDoubleInterpolation = pile`
-        ${C} ${{ cls: 'bar' }} ${ 'heyo' }
+        ${C} ${{ cls: 'bar' }} ${'heyo'}
     `
     assert.strictEqual(render(withDoubleInterpolation), '<div class="bar">heyo</div>')
 })

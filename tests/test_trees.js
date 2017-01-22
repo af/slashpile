@@ -70,9 +70,9 @@ test('array children', () => {
     const items = ['one', 'two', 'three']
     const multilevels = pile`
         ul
-            ${ items.map(x => pile`
+            ${items.map(x => pile`
                 li ${{ key: x }} ${x}
-            `) }
+            `)}
     `
     assert.strictEqual(render(multilevels), `<ul>
         <li>one</li>
@@ -83,7 +83,7 @@ test('array children', () => {
     const emptyItems = []
     const empty = pile`
         ul
-            > ${ emptyItems }
+            > ${emptyItems}
     `
     assert.strictEqual(render(empty), `<ul></ul>`)
 })

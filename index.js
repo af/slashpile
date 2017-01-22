@@ -3,8 +3,8 @@
 // Main regex for parsing input lines. The numbered group matches are labeled
 // above the regex.
 const lineRegex = (
-//     -1-  --2--      -3-         ----4---      5            --6--     7
-    /^(\s*)(\w+|%)(?::(\w+))?(?:\.([\w\.-]+))? ?(%)? ?(?:(?:"([^"]*)")|(%))?/
+//     -1-  --2--      -3-         ---4---      5            --6--     7
+    /^(\s*)(\w+|%)(?::(\w+))?(?:\.([\w.-]+))? ?(%)? ?(?:(?:"([^"]*)")|(%))?/
 )
 const commentRegex = /^\s+\//
 const PARAM_PLACEHOLDER = '%'        // Placeholder string for interpolated values
@@ -63,7 +63,7 @@ const lineToNode = (line, takeParam) => {
     else if (isPlainChild(stringVarChild)) parsedProps.children = [stringVarChild]
 
     const mergedProps = (parsedProps.className && varProps.className)
-                        ? { className: parsedProps.className + ' ' + varProps.className }
+                        ? { className: `${parsedProps.className} ${varProps.className}` }
                         : { className: parsedProps.className || varProps.className }
     return {
         indent,
